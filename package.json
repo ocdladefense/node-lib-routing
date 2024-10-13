@@ -1,0 +1,10 @@
+{
+    "name": "@ocdla/lib-routing",
+    "version": "1.0.0",
+    "scripts": {
+        "docs": "jsdoc src/* -d docs"
+    },
+    "devDependencies": {
+        "jsdoc": "^4.0.2"
+    }
+}
