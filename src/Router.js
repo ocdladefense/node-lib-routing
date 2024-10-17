@@ -1,10 +1,9 @@
 
 
 /**
- * @classdesc Router class to handle routing logic for a web application.
+ * Router class to manage routes and menus.
  */
 class Router {
-
 
     basePath = "/";
 
@@ -19,6 +18,10 @@ class Router {
      */
     #routes = [];
 
+    #menus = {};
+
+    #notFoundCallback;
+
     /**
      * @private
      * @type {string}
@@ -27,26 +30,47 @@ class Router {
 
     /**
      * Creates an instance of Router.
-     * @constructor
-     * @param {Object} routes - An object mapping route names to page components.
+     * @param {Array} routes - The initial routes.
      */
-
-    #notFoundCallback;
-
-
     constructor(routes) {
         this.#routes = routes || [];
     }
 
+    /**
+     * Adds a menu with specified items.
+     * @param {string} menuId - The ID of the menu.
+     * @param {Array} items - The items to add to the menu.
+     */
+    addMenu(menuId, items) {
+        this.#menus[menuId] = items;
+    }
 
+    /**
+     * Converts routes to menu items.
+     * @param {Array} routes - The routes to convert.
+     * @returns {Array} The converted menu items.
+     */
+    static toMenuItems(routes) {
+        return routes.map(route => {
+            return { url: route.path, label: route.callback.toLowerCase(), hidden: false };
+        });
+    }
+
+    /**
+     * Sets the component path.
+     * @param {string} path - The path to set.
+     */
     setComponentPath(path) {
         Router.componentPath = path;
     }
 
+    /**
+     * Sets the callback for not found routes.
+     * @param {Function} callback - The callback to set.
+     */
     setNotFoundCallback(callback) {
         this.#notFoundCallback = callback;
     }
-
 
     match(_path) {
         // Leave the root path alone; compensate for any trailing slashes.
@@ -76,8 +100,6 @@ class Router {
         return [this.#notFoundCallback, {}];
     }
 
-
-
     setBasePath(path) {
         this.basePath = path;
     }
@@ -98,9 +120,6 @@ class Router {
         this.#defaultPage = page;
     }
 
-        
-
-
     addRoute(path, callback, params = {}) {
         const routeExists = this.#routes.find(r => r.route === path);
 
@@ -110,9 +129,6 @@ class Router {
         } else this.#routes.push({ path, callback, params });
     }
 
-
-
-
     /**
      * Gets the current route from the URL.
      * @returns {string} The current route.
@@ -121,6 +137,5 @@ class Router {
         return window.location.href.split("/").at(-1).toLowerCase();
     }
 }
-
 
 export default Router;
